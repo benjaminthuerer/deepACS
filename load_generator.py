@@ -60,12 +60,18 @@ hypnos_learn = hypnos_learn.tolist()
 '''
 Changes to be made:
 - create model and feed data directly to model:
+- train model to the end
+- normalize data
+- batch normalization
 https://towardsdatascience.com/how-to-use-dataset-in-tensorflow-c758ef9e4428
 '''
-
+#from TrainModel import CreateModel as CM
+#model = CM(epoch_length)
+#model = model.getModel()
 
 epochs = 1
-batch_size = 2
+batch_size = 30
+total_steps = hypnos_learn.__len__()//batch_size
 def generator():
     start = 0
     stop = batch_size
@@ -74,11 +80,30 @@ def generator():
         yield [np.loadtxt(f"{data_path}{x[0]}") for x in files_learn[start:stop]], [v[0] for v in hypnos_learn[start:stop]]
         start, stop = start + batch_size, stop + batch_size
 
-dataset = tf.data.Dataset.from_generator(generator, (tf.float32, tf.float32))
-iter = dataset.make_one_shot_iterator()
+batch_size_test = 30
+total_steps_test = hypnos_test.__len__()//batch_size_test
+def generator_test():
+    start = 0
+    stop = batch_size_test
+    while True:
+        # files and hypnos come as nested list, therefor feed in loops
+        yield [np.loadtxt(f"{data_path_test}{x}") for x in files_test[start:stop]], [v for v in hypnos_test[start:stop]]
+        start, stop = start + batch_size_test, stop + batch_size_test
+
+
+dataset_learn = tf.data.Dataset.from_generator(generator, (tf.float32, tf.float32))
+iter = dataset_learn.make_one_shot_iterator()
 data, hypno = iter.get_next()
 
+'''check for accuracy with evaluate'''
+dataset_test = tf.data.Dataset.from_generator(generator_test, (tf.float32, tf.float32))
+iter = dataset_test.make_one_shot_iterator()
+data_test, hypno_test = iter.get_next()
+
 with tf.Session() as sess:
-    print(sess.run([data, hypno]))
-    print(sess.run([data, hypno]))
-    sess.close()
+    d, v = sess.run([data, hypno])
+    model.fit(d, v, batch_size=None, steps_per_epoch=total_steps, epochs=epochs)
+
+    d_t, v_t = sess.run([data_test, hypno_test])
+    loss, acc = model.evaluate(d_t, v_t, batch_size=None, steps=total_steps_test)
+    print(f"loss: {loss}, accuracy: {acc}")
