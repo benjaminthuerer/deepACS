@@ -1,5 +1,5 @@
 '''
-convert EEG data to learning dataset
+convert EEG data to learning and training dataset where each epoch is saved as a .gz file
 by Benjamin Thürer
 '''
 from typing import List, Any
@@ -16,6 +16,9 @@ data_data = f"{data_path}DAVOS_"
 files_folder = os.listdir(data_path)
 files_folder.sort()
 
+# folder patch for saving
+save_path = "/home/benjamin/Benjamin/EEGdata_for_learning/"  # change for testing!
+
 # loop through each file in folder. If .txt read as hypo and read EDF
 final_hg = []
 for file in files_folder:
@@ -26,14 +29,13 @@ for file in files_folder:
 
     sb_id = file[-8:-4]
     if sb_id == "1089":
-        continue  # because subject 1089 for testing! change == to != if save for testing (change save folders!!!)
+        continue  # because subject 1089 for testing! change == to != if save for testing (change save_path!)
 
     print(f"\n\n Load data of subject nr: {sb_id} \n\n")
     hypno = open(f"{data_hypno}{sb_id}.txt", "r")
 
     # Read EDF of specific EEG
     f = pyedflib.EdfReader(f"{data_data}{sb_id}_(1).edf")
-
 
     # get hypnogram for this file
     hg = []
@@ -63,7 +65,7 @@ for file in files_folder:
                 # add 30s for each channel into 'data'
                 data[0+i*epoch_length:i*epoch_length+epoch_length] = f.readSignal(i, start_d, epoch_length)
 
-            np.savetxt(f"/home/benjamin/Benjamin/EEGdata_for_learning/learn_{sb_id}_{start_d}.gz", data)
+            np.savetxt(f"{save_path}learn_{sb_id}_{start_d}.gz", data)
             saves += 1
             final_hg.append(int(hg[start_d//epoch_length][0]))
         start_d += epoch_length
@@ -74,4 +76,4 @@ for file in files_folder:
             p += 1
 
 # save the overall hypno of all files
-np.savetxt("/home/benjamin/Benjamin/EEGdata_for_learning/hypnos.gz", final_hg)
+np.savetxt(f"{save_path}hypnos.gz", final_hg)
