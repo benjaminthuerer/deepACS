@@ -2,12 +2,11 @@
 convert EEG data to learning and training dataset where each epoch is saved as a .gz file
 by Benjamin Thürer
 '''
-from typing import List, Any
 import os
 import pyedflib
 import numpy as np
-import matplotlib.pyplot as plt
-import time
+from runstats import Statistics
+
 
 # set paths for data and get all files in path
 data_path = "/home/benjamin/Benjamin/DAVOS_data/"
@@ -21,6 +20,8 @@ save_path = "/home/benjamin/Benjamin/EEGdata_for_learning/"  # change for testin
 
 # loop through each file in folder. If .txt read as hypo and read EDF
 final_hg = []
+stats = Statistics()
+
 for file in files_folder:
     try:
         file.index(".txt")
@@ -57,7 +58,6 @@ for file in files_folder:
     p = 0
     print("start looping through data and saving. This may take a while...")
 
-    saves = 0
     # loop through 30sec epochs of the data and save each epoch
     while f.getNSamples()[0] >= start_d + epoch_length:
         if int(hg[start_d//epoch_length][0]) != 8:  # as long as epoch is not an artifact (8)
@@ -65,8 +65,8 @@ for file in files_folder:
                 # add 30s for each channel into 'data'
                 data[0+i*epoch_length:i*epoch_length+epoch_length] = f.readSignal(i, start_d, epoch_length)
 
+            [stats.push(v) for v in data]
             np.savetxt(f"{save_path}learn_{sb_id}_{start_d}.gz", data)
-            saves += 1
             final_hg.append(int(hg[start_d//epoch_length][0]))
         start_d += epoch_length
 
@@ -77,3 +77,9 @@ for file in files_folder:
 
 # save the overall hypno of all files
 np.savetxt(f"{save_path}hypnos.gz", final_hg)
+
+data_min_max = [[stats.minimum()], [stats.maximum()]]
+np.savetxt(f"{save_path}min_max.gz", data_min_max)
+
+data_mean_std = [[stats.mean()], [stats.stddev()]]
+np.savetxt(f"{save_path}sum_N.gz", data_mean_std)
