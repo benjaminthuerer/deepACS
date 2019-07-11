@@ -18,8 +18,8 @@ batch_size = 64
 batch_size_test = 32
 
 # define number of EEG channels and s_rate
-n = 12  # 11 eeg channels
-s_rate = 64
+n = 14  # 11 eeg channels
+s_rate = 32
 t = s_rate * 30
 n_dim = 513  # for PSD only
 
@@ -89,8 +89,11 @@ hypnos_test = c[:, 1:]
 files_test = files_test.tolist()
 hypnos_test = hypnos_test.tolist()
 
+# mean, std, min, max:
 data_mean = sum_N[0]
 data_std = sum_N[1]
+data_min = min_max[0]
+data_max = min_max[1]
 
 # convert to categoricals
 _ = []
@@ -101,7 +104,7 @@ _ = []
 [_.append(int(float(v[0]))) for v in hypnos_test]
 hypnos_test = tf.keras.utils.to_categorical(_)
 
-learning_rates = [0.0001]
+learning_rates = [0.001]
 activate = 'relu'
 
 for lrate in learning_rates:
@@ -113,4 +116,4 @@ for lrate in learning_rates:
 
     # execute training
     execute_train(n_dim, batch_size, data_path, files_learn, hypnos_learn, batch_size_test, data_path_test,
-                  hypnos_test, files_test, epochs, model, data_mean, data_std)
+                  hypnos_test, files_test, epochs, model, data_mean, data_std, data_min, data_max)

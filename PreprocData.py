@@ -31,6 +31,11 @@ save_path = "/home/benjamin/Benjamin/EEGdata_for_learning/"  # change for testin
 final_hg = []
 stats = Statistics()
 
+# specific values for preprocesing:
+ds = 32  # downsample to 32 hz
+epoch_s = 30  # epoch seconds
+n = 14  # number of EEG channels included
+
 for file in files_folder:
     try:
         file.index(".txt")
@@ -51,11 +56,10 @@ for file in files_folder:
     [hg.append(x) for x in hypno]
 
     # include EOG, EMG, EEG
-    n = 14
     signal_labels = f.getSignalLabels()
     s_rate = 256
-    epoch_length = s_rate * 30  # for 30s epoch
-    iter_range = [1, 2, 3, 4, 6, 8, 9, 10, 13]
+    epoch_length = s_rate * epoch_s  # for 30s epoch
+    # iter_range = [1, 2, 3, 4, 6, 8, 9, 10, 13]
 
     # linked mastoid for re-referencing
     M1 = signal_labels.index('M1')
@@ -64,7 +68,7 @@ for file in files_folder:
 
     # preallocate memory and get start
     data = np.zeros((n * epoch_length))
-    start_d = epoch_length * 120  # exclude the first hour due to artifacts
+    start_d = epoch_length * 240  # exclude the first 2 hours due to artifacts
 
     # just for printing percentage of progress
     perc = np.linspace(10, 100, 10)
@@ -84,7 +88,9 @@ for file in files_folder:
             # data[0 + (n-1) * epoch_length:(n-1) * epoch_length + epoch_length] = f.readSignal(7, start_d, epoch_length)
 
             df = pd.DataFrame(data.reshape(data.__len__() // n, n))
-            df = pd.DataFrame(signal.resample(df, 30 * 64))  # downsample to 64 hz
+            df = pd.DataFrame(signal.resample(df, epoch_s * ds))  # downsample to ds hz
+
+            # re-reference to linked mastoids
             M_ref = linked_M(df)
             df = df.sub(M_ref, axis='rows')
             df.__delitem__(M1)
@@ -100,7 +106,6 @@ for file in files_folder:
             np.savetxt(f"{save_path}learn_{sb_id}_{start_d}_1.gz", dataN)
             final_hg.append(int(hg[start_d // epoch_length][0]))
 
-
             try:
                 if int(hg[start_d // epoch_length][0]) == int(hg[(start_d + epoch_length) // epoch_length][0]):
                     for i in np.arange(n):
@@ -111,7 +116,7 @@ for file in files_folder:
 
                     # data[0 + (n-1) * epoch_length: (n-1) * epoch_length + epoch_length] = f.readSignal(7, start_d, epoch_length)
                     df = pd.DataFrame(data.reshape(data.__len__() // n, n))
-                    df = pd.DataFrame(signal.resample(df, 30 * 64))  # downsample to 64 hz
+                    df = pd.DataFrame(signal.resample(df, epoch_s * ds))  # downsample to ds hz
                     M_ref = linked_M(df)
                     df = df.sub(M_ref, axis='rows')
                     df.__delitem__(M1)
