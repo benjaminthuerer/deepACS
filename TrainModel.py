@@ -1,25 +1,27 @@
 '''
 Problem: overfitting; Changes to be made:
-- get more data
-- lower learning rate / regularization?
-- change layers (CNN for 1d data? or make 2d for channels?)
-- RNN more sense?
+- switch to RNN
+- test pipeline with MNIST?
+- more layers
 '''
 
 import os
 import numpy as np
 import tensorflow as tf
 from DefModel import CreateModel
+from ExecuteTraining import execute_train
+
 
 # set number of epochs and batch size
 epochs = 10
-batch_size = 34
+batch_size = 64
 batch_size_test = 32
 
 # define number of EEG channels and s_rate
-n = 11  # 11 eeg channels
+n = 12  # 11 eeg channels
 s_rate = 64
 t = s_rate * 30
+n_dim = 513  # for PSD only
 
 # load and sort data for learning
 data_path = "/home/benjamin/Benjamin/EEGdata_for_learning/"
@@ -31,7 +33,7 @@ sum_N = np.loadtxt(f"{data_path}sum_N.gz")
 del files[files.index("hypnos.gz")]
 del files[files.index("min_max.gz")]
 del files[files.index("sum_N.gz")]
-files_learn = files
+files_learn = files[:]
 
 # load and sort data for testing
 data_path_test = "/home/benjamin/Benjamin/EEGdata_for_testing/"
@@ -45,7 +47,7 @@ files_test = files
 
 # get lowest count across all sleep stages (ensure same amount of training data for each condition)
 _, counts = np.unique(hypnos_learn, return_counts=True)
-min_count = min(counts)
+min_count = min(counts)  # min count 1368 (6*1368=8208 not much data!) || now 2165 (...=12990)
 
 # update files_learn to equal amounts of sleep stages
 D = {}
@@ -87,66 +89,28 @@ hypnos_test = c[:, 1:]
 files_test = files_test.tolist()
 hypnos_test = hypnos_test.tolist()
 
-# create model from DefModel.py
-model = CreateModel(n, t)
-model = model.getModel()
-
-# predefine steps for training
-total_steps = hypnos_learn.__len__() // batch_size
-total_steps_test = hypnos_test.__len__() // batch_size_test
-
 data_mean = sum_N[0]
 data_std = sum_N[1]
 
+# convert to categoricals
+_ = []
+[_.append(int(float(v[0]))) for v in hypnos_learn]
+hypnos_learn = tf.keras.utils.to_categorical(_)
 
-def normalize_d(data_n, h):
-    """z-transform data"""
-    data_n = (data_n - data_mean) / data_std
-    return [data_n, h]
+_ = []
+[_.append(int(float(v[0]))) for v in hypnos_test]
+hypnos_test = tf.keras.utils.to_categorical(_)
 
+learning_rates = [0.0001]
+activate = 'relu'
 
-def generator():
-    """load learning data in chuncks to spare memory"""
-    start = 0
-    stop = batch_size
-    while True:
-        # files and hypnos come as nested list, therefor feed in loops
-        yield [np.loadtxt(f"{data_path}{x[0]}") for x in files_learn[start:stop]], [s[0] for s in
-                                                                                    hypnos_learn[start:stop]]
-        start, stop = start + batch_size, stop + batch_size
+for lrate in learning_rates:
+    # create model from DefModel.py
+    # model = CreateModel()
+    # model = model.model_cnn(n, t, lrate, activate)
+    model = CreateModel()
+    model = model.model_dense(n*t, activate, lrate)
 
-
-def generator_test():
-    """load testing / validation data in chuncks"""
-    start = 0
-    stop = batch_size_test
-    while True:
-        # files and hypnos come as nested list, therefor feed in loops
-        yield [np.loadtxt(f"{data_path_test}{x[0]}") for x in files_test[start:stop]], [s[0] for s in
-                    hypnos_test[start:stop]]
-        start, stop = start + batch_size_test, stop + batch_size_test
-
-
-# create Dataset with from_generator procedure and apply normalization
-dataset_learn = tf.data.Dataset.from_generator(generator, (tf.float32, tf.float32))
-dataset_learn = dataset_learn.map(lambda lx, lz: tf.py_func(normalize_d, [lx, lz], [tf.float32, tf.float32]))
-iter = dataset_learn.make_one_shot_iterator()
-data, hypno = iter.get_next()
-
-dataset_test = tf.data.Dataset.from_generator(generator_test, (tf.float32, tf.float32))
-dataset_test = dataset_test.map(lambda lx, lz: tf.py_func(normalize_d, [lx, lz], [tf.float32, tf.float32]))
-iter = dataset_test.make_one_shot_iterator()
-data_test, hypno_test = iter.get_next()
-
-saver = tf.train.Saver()
-
-# parallelise options CPU
-config = tf.ConfigProto(intra_op_parallelism_threads=1,
-                        inter_op_parallelism_threads=1,
-                        allow_soft_placement=False)
-
-sess = tf.Session(config=config)
-d, v = sess.run([data, hypno])
-dt, vt = sess.run([data_test, hypno_test])
-model.fit(d, v, batch_size=None, steps_per_epoch=total_steps, epochs=epochs, validation_data=(dt, vt), validation_steps=total_steps_test)
-sess.close()
+    # execute training
+    execute_train(n_dim, batch_size, data_path, files_learn, hypnos_learn, batch_size_test, data_path_test,
+                  hypnos_test, files_test, epochs, model, data_mean, data_std)
