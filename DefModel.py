@@ -47,15 +47,15 @@ class CreateModel:
     def model_dense(self, n_dim, activate, lrate):
         self.model = tf.keras.models.Sequential()
 
-        self.model.add(tf.keras.layers.Dense(2000, activation=activate, input_shape=(n_dim,)))
+        self.model.add(tf.keras.layers.Dense(250, activation=activate, input_shape=(n_dim,)))
         self.model.add(tf.keras.layers.BatchNormalization())
         # self.model.add(tf.keras.layers.Dropout(0.3))
 
-        self.model.add(tf.keras.layers.Dense(1000, activation=activate))
+        self.model.add(tf.keras.layers.Dense(220, activation=activate))
         # self.model.add(tf.keras.layers.Dropout(0.3))
         self.model.add(tf.keras.layers.BatchNormalization())
 
-        # self.model.add(tf.keras.layers.Dense(60, activation=activate))
+        # self.model.add(tf.keras.layers.Dense(1000, activation=activate))
         # # self.model.add(tf.keras.layers.Dropout(0.3))
         # self.model.add(tf.keras.layers.BatchNormalization())
         #
@@ -73,7 +73,7 @@ class CreateModel:
 
 
 if __name__ == "__main__":
-    n = 14  # 11 eeg channels
+    n = 5  # 11 eeg channels
     t = 32 * 30  # time points for each channels epoch
     n_dim = t*n
     activate = 'relu'

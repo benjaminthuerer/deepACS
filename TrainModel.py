@@ -1,5 +1,7 @@
 '''
 Problem: overfitting; Changes to be made:
+- just 5 EEG channels
+- filter between 1-30 hz?
 - switch to RNN
 - test pipeline with MNIST?
 - more layers
@@ -13,12 +15,12 @@ from ExecuteTraining import execute_train
 
 
 # set number of epochs and batch size
-epochs = 10
+epochs = 100
 batch_size = 64
 batch_size_test = 32
 
 # define number of EEG channels and s_rate
-n = 14  # 11 eeg channels
+n = 5  # 12 eeg channels
 s_rate = 32
 t = s_rate * 30
 n_dim = 513  # for PSD only
@@ -104,12 +106,12 @@ _ = []
 [_.append(int(float(v[0]))) for v in hypnos_test]
 hypnos_test = tf.keras.utils.to_categorical(_)
 
-learning_rates = [0.001]
+learning_rates = [0.0005]
 activate = 'relu'
 
 for lrate in learning_rates:
     # create model from DefModel.py
-    # model = CreateModel()
+
     # model = model.model_cnn(n, t, lrate, activate)
     model = CreateModel()
     model = model.model_dense(n*t, activate, lrate)
