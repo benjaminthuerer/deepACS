@@ -79,7 +79,7 @@ if __name__ == "__main__":
     activate = 'relu'
     lrate = 0.001
     model = CreateModel()
-    model = model.model_dense(n_dim, activate, lrate)
+    model = model.model_cnn(n, t, lrate, activate)
     # test = np.random.randn(t * n, 1)
     # model.build(test)
     model.summary()

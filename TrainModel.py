@@ -111,10 +111,10 @@ activate = 'relu'
 
 for lrate in learning_rates:
     # create model from DefModel.py
-
-    # model = model.model_cnn(n, t, lrate, activate)
     model = CreateModel()
-    model = model.model_dense(n*t, activate, lrate)
+
+    model = model.model_cnn(n, t, lrate, activate)
+    # model = model.model_dense(n*t, activate, lrate)
 
     # execute training
     execute_train(n_dim, batch_size, data_path, files_learn, hypnos_learn, batch_size_test, data_path_test,

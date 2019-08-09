@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a6796dd9-d97b-48fe-b2e2-c0d9fad9ab78" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DefModel.py" beforeDir="false" afterPath="$PROJECT_DIR$/DefModel.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PreprocData.py" beforeDir="false" afterPath="$PROJECT_DIR$/PreprocData.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TrainModel.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrainModel.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -73,7 +71,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.TrainModel">
+  <component name="RunManager" selected="Python.DefModel">
     <configuration name="DefModel" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="DeepLearningNew" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -166,9 +164,9 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.DefModel" />
         <item itemvalue="Python.TrainModel" />
         <item itemvalue="Python.PreprocData" />
-        <item itemvalue="Python.DefModel" />
         <item itemvalue="Python.test" />
       </list>
     </recent_temporary>
