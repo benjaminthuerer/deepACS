@@ -13,7 +13,12 @@ def execute_train(n_dim, batch_size, data_path, files_learn, hypnos_learn, batch
 
     def normalize_d(data_n, h):
         """min-max normalization: 0-1 range"""
-        data_n = (data_n - data_min) / (data_max - data_min)
+        data_min = []
+        [data_min.append(data_n[v, :, :].min()) for v in range(data_n.shape[0])]
+        data_n = data_n.transpose() - np.array(data_min)
+        data_max = []
+        [data_max.append(data_n[v, :, :].max()) for v in range(data_n.shape[0])]
+        data_n = data_n.transpose() / np.array(data_max)
         return [data_n, h]
 
         # """z-transform data"""
@@ -29,7 +34,7 @@ def execute_train(n_dim, batch_size, data_path, files_learn, hypnos_learn, batch
         stop = batch_size
         while True:
             # files and hypnos come as nested list, therefor feed in loops
-            yield [np.loadtxt(f"{data_path}{ch[0]}") for ch in files_learn[start:stop]], [s for s in
+            yield np.array([np.loadtxt(f"{data_path}{ch[0]}") for ch in files_learn[start:stop]]), [s for s in
                                                                                           hypnos_learn[start:stop]]
             start, stop = start + batch_size, stop + batch_size
 
@@ -66,8 +71,16 @@ def execute_train(n_dim, batch_size, data_path, files_learn, hypnos_learn, batch
         # sess = tf.Session(config=config)
         d, v = sess.run([data, hypno])
         dt, vt = sess.run([data_test, hypno_test])
+        # model.fit(d, v, batch_size=1, epochs=1, shuffle=False)
+        # scores = model.evaluate(dt, vt, batch_size=1)
+        # print(f"Model Accuracy: {scores[1]*100}")
+
         model.fit(d, v, batch_size=None, steps_per_epoch=total_steps, epochs=epochs, validation_data=(dt, vt),
-                  validation_steps=total_steps_test, callbacks=[early_stop])
+                  validation_steps=total_steps_test, callbacks=[early_stop], shuffle=False)
+        scores = model.evaluate(d, v, batch_size=batch_size)
+        print(f"trained accuracy: {scores[1]*100}")
+        scores = model.evaluate(dt, vt, batch_size=batch_size)
+        print(f"test accuracy: {scores[1] * 100}")
 
         # save model:
         # model_json = model.to_json()

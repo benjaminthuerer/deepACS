@@ -25,7 +25,7 @@ files_folder = os.listdir(data_path)
 files_folder.sort()
 
 # folder path for saving (this must be changed for testing)
-save_path = "/home/benjamin/Benjamin/EEGdata_for_testing/"  # change for testing!
+save_path = "/home/benjamin/Benjamin/EEGdata_for_learning/"  # change for testing!
 
 # loop through each file in folder. If .txt: read as hypo and read EDF
 final_hg = []
@@ -43,7 +43,7 @@ for file in files_folder:
         continue
 
     sb_id = file[-8:-4]
-    if sb_id != "1015":
+    if sb_id == "1038":
         continue  # because subject 1038 for testing! change == to != if save for testing (change save_path!)
 
     # load hypnogram and read EDF for specific EEG file
@@ -101,12 +101,12 @@ for file in files_folder:
             df.__delitem__(M1)
             df.__delitem__(M2)
             r, c = df.shape
-            dataN = np.array(df.transpose()).reshape(r*c)
+            dataN = np.array(df.transpose())
 
             # calculate PSD:
             # _, dataN = signal.welch(dataN, 128, nperseg=1024)
             # dataN = dataN / dataN.max()
-            [stats.push(v) for v in dataN]
+            [stats.push(v) for v in dataN.reshape(r*c)]
 
             np.savetxt(f"{save_path}learn_{sb_id}_{start_d}_1.gz", dataN)
             final_hg.append(int(hg[start_d // epoch_length][0]))
@@ -130,7 +130,7 @@ for file in files_folder:
             #         df.__delitem__(M1)
             #         df.__delitem__(M2)
             #         r, c = df.shapes
-            #         dataN = np.array(df).reshape(r * c)
+            #         dataN = np.array(df)
             #
             #         # calculate PSD:
             #         # _, dataN = signal.welch(dataN, 128, nperseg=1024)

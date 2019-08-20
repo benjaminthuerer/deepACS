@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a6796dd9-d97b-48fe-b2e2-c0d9fad9ab78" name="Default Changelist" comment="" />
+    <list default="true" id="a6796dd9-d97b-48fe-b2e2-c0d9fad9ab78" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DefModel.py" beforeDir="false" afterPath="$PROJECT_DIR$/DefModel.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ExecuteTraining.py" beforeDir="false" afterPath="$PROJECT_DIR$/ExecuteTraining.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PreprocData.py" beforeDir="false" afterPath="$PROJECT_DIR$/PreprocData.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrainModel.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrainModel.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,25 +38,6 @@
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="1" id="Add" />
   </component>
-  <component name="ProjectView">
-    <navigator proportions="" version="1">
-      <foldersAlwaysOnTop value="true" />
-    </navigator>
-    <panes>
-      <pane id="Scope" />
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="deepACS" type="b2602c69:ProjectViewProjectNode" />
-              <item name="deepACS" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-    </panes>
-  </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
@@ -68,17 +55,17 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.DefModel">
+  <component name="RunManager" selected="Python.TrainModel">
     <configuration name="DefModel" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="DeepLearningNew" />
+      <module name="deepACS" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="" />
+      <option name="SDK_HOME" value="$PROJECT_DIR$/../../../anaconda3/envs/DeepLearningEnv/bin/python3.6" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/DefModel.py" />
@@ -91,15 +78,15 @@
       <method v="2" />
     </configuration>
     <configuration name="PreprocData" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="DeepLearningNew" />
+      <module name="deepACS" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="" />
+      <option name="SDK_HOME" value="$PROJECT_DIR$/../../../anaconda3/envs/DeepLearningEnv/bin/python3.6" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/PreprocData.py" />
@@ -112,15 +99,15 @@
       <method v="2" />
     </configuration>
     <configuration name="TrainModel" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="DeepLearningNew" />
+      <module name="deepACS" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="" />
+      <option name="SDK_HOME" value="$PROJECT_DIR$/../../../anaconda3/envs/DeepLearningEnv/bin/python3.6" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/TrainModel.py" />
@@ -133,15 +120,15 @@
       <method v="2" />
     </configuration>
     <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="DeepLearningNew" />
+      <module name="deepACS" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="" />
+      <option name="SDK_HOME" value="$PROJECT_DIR$/../../../anaconda3/envs/DeepLearningEnv/bin/python3.6" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/ExecuteTraining.py" />
@@ -161,9 +148,9 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.DefModel" />
         <item itemvalue="Python.TrainModel" />
         <item itemvalue="Python.PreprocData" />
+        <item itemvalue="Python.DefModel" />
         <item itemvalue="Python.test" />
       </list>
     </recent_temporary>
@@ -186,7 +173,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>

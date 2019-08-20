@@ -1,11 +1,11 @@
-'''
+"""
 Problem: overfitting; Changes to be made:
-- just 5 EEG channels
-- filter between 1-30 hz?
-- switch to RNN
+- switch to LSTM (reshape: time, 1 look back, 5 channels)
+- min-max for each epoch!
+- more data
 - test pipeline with MNIST?
 - more layers
-'''
+"""
 
 import os
 import numpy as np
@@ -15,9 +15,9 @@ from ExecuteTraining import execute_train
 
 
 # set number of epochs and batch size
-epochs = 100
-batch_size = 64
-batch_size_test = 32
+epochs = 2
+batch_size = 60
+batch_size_test = 60
 
 # define number of EEG channels and s_rate
 n = 5  # 12 eeg channels
@@ -57,6 +57,7 @@ i = 0
 new_hypno = []
 new_files = []
 
+"""this disturbs the order, right?!"""
 while i < hypnos_learn.__len__():
     if hypnos_learn[i] not in D:
         D[hypnos_learn[i]] = 1
@@ -73,6 +74,7 @@ while i < hypnos_learn.__len__():
 files_learn = new_files
 hypnos_learn = new_hypno
 
+"""not shuffle for LSTM??"""
 # shuffle learning data
 c = np.c_[files_learn, hypnos_learn]
 np.random.shuffle(c)
@@ -100,20 +102,23 @@ data_max = min_max[1]
 # convert to categoricals
 _ = []
 [_.append(int(float(v[0]))) for v in hypnos_learn]
-hypnos_learn = tf.keras.utils.to_categorical(_)
+hypnos_learn = _
+# hypnos_learn = tf.keras.utils.to_categorical(_)
 
 _ = []
 [_.append(int(float(v[0]))) for v in hypnos_test]
-hypnos_test = tf.keras.utils.to_categorical(_)
+hypnos_test = _
+# hypnos_test = tf.keras.utils.to_categorical(_)
 
-learning_rates = [0.0005]
+learning_rates = [0.001]
 activate = 'relu'
 
 for lrate in learning_rates:
     # create model from DefModel.py
     model = CreateModel()
 
-    model = model.model_cnn(n, t, lrate, activate)
+    model = model.model_lstm(n, t, lrate, activate, batch_size)
+    # model = model.model_cnn(n, t, lrate, activate)
     # model = model.model_dense(n*t, activate, lrate)
 
     # execute training
