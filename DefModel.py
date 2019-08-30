@@ -39,19 +39,31 @@ class CreateModel:
 
         self.model.add(tf.keras.layers.Dense(6, activation='softmax'))
 
-        optimizer = tf.keras.optimizers.Adam(lr=lrate, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
-        self.model.compile(optimizer=optimizer, loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+        optimizer = tf.keras.optimizers.Adam(lr=lrate, decay=1e-04)
+        self.model.compile(optimizer=optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
 
+        return self.model
+
+    def model_lstm(self, n, t, lrate, activate, batch_size):
+        self.model = tf.keras.models.Sequential()
+
+        self.model.add(tf.keras.layers.LSTM(400, input_shape=(n, t), return_sequences=True))
+        self.model.add(tf.keras.layers.LSTM(600))
+        self.model.add(tf.keras.layers.Dropout(0.2))
+        self.model.add(tf.keras.layers.Dense(6, activation='softmax'))
+
+        optimizer = tf.keras.optimizers.Adam(lr=lrate, decay=1e-05)
+        self.model.compile(optimizer=optimizer, loss='sparse_categorical_crossentropy', metrics=['accuracy'])
         return self.model
 
     def model_dense(self, n_dim, activate, lrate):
         self.model = tf.keras.models.Sequential()
 
-        self.model.add(tf.keras.layers.Dense(250, activation=activate, input_shape=(n_dim,)))
+        self.model.add(tf.keras.layers.LSTM(250, activation=activate, input_shape=(n_dim,), return_sequences=True))
         self.model.add(tf.keras.layers.BatchNormalization())
         # self.model.add(tf.keras.layers.Dropout(0.3))
 
-        self.model.add(tf.keras.layers.Dense(220, activation=activate))
+        self.model.add(tf.keras.layers.LSTM(220, activation=activate))
         # self.model.add(tf.keras.layers.Dropout(0.3))
         self.model.add(tf.keras.layers.BatchNormalization())
 
@@ -65,7 +77,7 @@ class CreateModel:
 
         self.model.add(tf.keras.layers.Dense(6, activation='softmax'))
 
-        optimizer = tf.keras.optimizers.Adam(lr=lrate, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
+        optimizer = tf.keras.optimizers.Adam(lr=lrate, decay=1e-04)
         # optimizer = tf.keras.optimizers.SGD(lrate)
         self.model.compile(optimizer=optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
 
@@ -79,7 +91,7 @@ if __name__ == "__main__":
     activate = 'relu'
     lrate = 0.001
     model = CreateModel()
-    model = model.model_dense(n_dim, activate, lrate)
+    model = model.model_lstm(n, t, lrate, activate)
     # test = np.random.randn(t * n, 1)
     # model.build(test)
     model.summary()
